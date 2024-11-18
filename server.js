@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
-const SECRET_KEY = import.meta.env.SECRET_KEY
+const dotenv = require('dotenv');
+dotenv.config();
+const SECRETKEY = process.env.SECRETKEY;
 
 const users = [
   {
@@ -31,8 +32,6 @@ app.use(cookieParser());
 app.use(express.json());
 
 // const secretKey = "ozcodingschool";
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
-console.log('SESSION_SECRET:', process.env.SESSION_SECRET);
 
 // 클라이언트에서 post 요청을 받은 경우
 app.post("/", (req, res) => {
@@ -44,16 +43,23 @@ app.post("/", (req, res) => {
   if (!userInfo) {
     res.status(401).send("로그인 실패");
   } else {
-    jwt.
+    const accessToken = jwt.sign({ userId: userInfo.user_id }, SECRETKEY, { expiresIn: 1000 * 60 * 10 })
+    res.cookie('accessToken', accessToken)
+    res.send('토큰 생성 완료')
   }
 });
 
 // 클라이언트에서 get 요청을 받은 경우
 app.get("/", (req, res) => {
-  // 3. req headers에 담겨있는 accessToken을 검증하는 로직을 작성하세요.(verify)
-  // 이곳에 코드를 작성하세요.
-  // 4. 검증이 완료되면 유저정보를 클라이언트로 전송하세요.(res.send 사용)
-  // 이곳에 코드를 작성하세요.
+  const { accessToken } = req.cookies;
+  const payload = jwt.verify(accessToken, SECRETKEY)
+  const userInfo = users.find(el => el.user_id === payload.userId)
+  return res.send(userInfo)
 });
+
+app.delete('/', (req, res) => {
+  res.clearCookie('accessToken')
+  res.send('토큰 삭제 완료!')
+})
 
 app.listen(3000, () => console.log("서버 실행!"));
