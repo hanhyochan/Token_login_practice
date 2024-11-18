@@ -17,8 +17,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://127.0.0.1:[본인의 포트번호]",
-      "http://localhost:[본인의 포트번호]",
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
     ],
     methods: ["OPTIONS", "POST", "GET", "DELETE"],
     credentials: true,
@@ -40,10 +40,7 @@ app.post("/", (req, res) => {
   if (!userInfo) {
     res.status(401).send("로그인 실패");
   } else {
-    // 1. 유저정보가 있는 경우 accessToken을 발급하는 로직을 작성하세요.(sign)
-    // 이곳에 코드를 작성하세요.
-    // 2. 응답으로 accessToken을 클라이언트로 전송하세요. (res.send 사용)
-    // 이곳에 코드를 작성하세요.
+    jwt.
   }
 });
 
