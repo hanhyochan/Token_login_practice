@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
+const SECRET_KEY = import.meta.env.SECRET_KEY
 
 const users = [
   {
@@ -28,7 +30,9 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-const secretKey = "ozcodingschool";
+// const secretKey = "ozcodingschool";
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
+console.log('SESSION_SECRET:', process.env.SESSION_SECRET);
 
 // 클라이언트에서 post 요청을 받은 경우
 app.post("/", (req, res) => {
